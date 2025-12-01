@@ -1,59 +1,63 @@
-# MunicipiosApp
+# MunicipiosAPP
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.
+A MunicipiosAPP é uma aplicação frontend desenvolvida em Angular 21 com o objetivo de consumir a MunicipiosAPI e exibir os municípios de uma UF de forma paginada. O projeto utiliza Standalone Components, Angular Signals e um serviço dedicado para comunicação HTTP.
 
-## Development server
+## 1. Objetivo
 
-To start a local development server, run:
+Fornecer uma interface web simples para consultar e navegar entre municípios brasileiros, ajustando tamanho de página e visualizando informações de forma organizada.
 
-```bash
-ng serve
+## 2. Arquitetura
+
+### Componentes
+- HomeComponent: tela principal com consulta, tabela paginada e controles de navegação.
+- SobreComponent: página institucional sobre o projeto.
+
+### Services
+- MunicipiosService: responsável por realizar chamadas HTTP para a API.
+
+### Models
+- Municipio
+- PaginatedResponse<T>
+
+## 3. Tecnologias
+
+- Angular 21
+- TypeScript
+- Angular Signals
+- Standalone Components
+- HttpClient
+- Vercel (deploy)
+
+## 4. Configuração da API
+
+Arquivo: `src/environments/environment.ts`
+
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:5119'
+};
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 5. Execução
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Disponível em: http://localhost:4200
 
-```bash
-ng generate --help
+## 6. Estrutura
+
+```
+/src/app
+  /pages
+  /services
+  /models
+  app.routes.ts
 ```
 
-## Building
+## 7. Deploy
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+A aplicação está publicada em: https://municipios-app.vercel.app
