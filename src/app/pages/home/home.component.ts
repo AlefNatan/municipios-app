@@ -1,8 +1,8 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MunicipiosService } from '../../services/municipios.service';
 import { Municipio } from '../../models/municipio.interface';
-import { ESTADOS_BRASIL, Estado } from '../../models/estado.interface';
+import { ESTADOS_BRASIL } from '../../models/estado.interface';
 
 @Component({
   selector: 'app-home',
@@ -12,70 +12,18 @@ import { ESTADOS_BRASIL, Estado } from '../../models/estado.interface';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
+  estados = ESTADOS_BRASIL;
+
+  selectedEstado = signal<string>('RJ');
   municipios = signal<Municipio[]>([]);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
 
-  estados = ESTADOS_BRASIL;
-  selectedEstado = signal<string>('RJ');
-
   currentPage = signal<number>(1);
-  itemsPerPage = signal<number>(10);
+  pageSize = signal<number>(20);
 
-  paginatedMunicipios = computed(() => {
-    const start = (this.currentPage() - 1) * this.itemsPerPage();
-    const end = start + this.itemsPerPage();
-    return this.municipios().slice(start, end);
-  });
-
-  totalPages = computed(() => {
-    return Math.ceil(this.municipios().length / this.itemsPerPage());
-  });
-
-  hasPreviousPage = computed(() => this.currentPage() > 1);
-  hasNextPage = computed(() => this.currentPage() < this.totalPages());
-
-  paginationInfo = computed(() => {
-    const start = (this.currentPage() - 1) * this.itemsPerPage() + 1;
-    const end = Math.min(this.currentPage() * this.itemsPerPage(), this.municipios().length);
-    return { start, end, total: this.municipios().length };
-  });
-
-  pageNumbers = computed(() => {
-    const pages: (number | 'ellipsis')[] = [];
-    const total = this.totalPages();
-    const current = this.currentPage();
-
-    if (total <= 7) {
-      for (let i = 1; i <= total; i++) {
-        pages.push(i);
-      }
-    } else {
-      pages.push(1);
-
-      if (current <= 3) {
-        for (let i = 2; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push('ellipsis');
-        pages.push(total);
-      } else if (current >= total - 2) {
-        pages.push('ellipsis');
-        for (let i = total - 3; i <= total; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push('ellipsis');
-        for (let i = current - 1; i <= current + 1; i++) {
-          pages.push(i);
-        }
-        pages.push('ellipsis');
-        pages.push(total);
-      }
-    }
-
-    return pages;
-  });
+  totalPages = signal<number>(1);
+  totalItems = signal<number>(0);
 
   constructor(private municipiosService: MunicipiosService) {}
 
@@ -86,51 +34,47 @@ export class HomeComponent implements OnInit {
   loadMunicipios(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.currentPage.set(1);
 
-    this.municipiosService.getMunicipiosByEstado(this.selectedEstado()).subscribe({
-      next: (data) => {
-        this.municipios.set(data);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Erro ao carregar municípios. Por favor, tente novamente.');
-        this.loading.set(false);
-        console.error('Erro ao carregar municípios:', err);
-      },
-    });
+    this.municipiosService
+      .getMunicipios(this.selectedEstado(), this.currentPage(), this.pageSize())
+      .subscribe({
+        next: (res) => {
+          this.municipios.set(res.items);
+          this.totalPages.set(res.totalPages);
+          this.totalItems.set(res.totalItems);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set('Erro ao carregar municípios.');
+          this.loading.set(false);
+        }
+      });
   }
 
   onEstadoChange(uf: string): void {
     this.selectedEstado.set(uf);
+    this.currentPage.set(1);
     this.loadMunicipios();
   }
 
-  getEstadoNome(uf: string): string {
-    const estado = this.estados.find((e) => e.uf === uf);
-    return estado ? estado.nome : '';
+  nextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+      this.loadMunicipios();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+      this.loadMunicipios();
+    }
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages()) {
       this.currentPage.set(page);
+      this.loadMunicipios();
     }
-  }
-
-  previousPage(): void {
-    if (this.hasPreviousPage()) {
-      this.currentPage.update((page) => page - 1);
-    }
-  }
-
-  nextPage(): void {
-    if (this.hasNextPage()) {
-      this.currentPage.update((page) => page + 1);
-    }
-  }
-
-  changeItemsPerPage(items: number): void {
-    this.itemsPerPage.set(items);
-    this.currentPage.set(1);
   }
 }
