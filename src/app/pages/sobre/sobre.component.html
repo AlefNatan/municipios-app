@@ -8,20 +8,22 @@
     <section>
       <h2 class="text-2xl font-semibold text-gray-800 mb-4">MunicipiosAPP</h2>
       <p class="text-gray-600 leading-relaxed">
-        Este é um aplicativo desenvolvido em Angular que permite visualizar e consultar informações sobre 
-        os municípios do estado do Rio de Janeiro. A aplicação consome dados de uma API REST e apresenta 
-        as informações de forma organizada e intuitiva.
+        O <strong>MunicipiosAPP</strong> é uma aplicação desenvolvida como parte de um desafio técnico Fullstack.
+        O objetivo é consumir dados de uma API criada em .NET 10, responsável por listar municípios de qualquer
+        estado (UF) do Brasil, e exibir essas informações em uma SPA construída em Angular 21, de forma clara,
+        organizada e paginada.
       </p>
     </section>
 
     <section>
       <h2 class="text-2xl font-semibold text-gray-800 mb-4">Funcionalidades</h2>
       <ul class="list-disc list-inside space-y-2 text-gray-600">
-        <li>Listagem completa de municípios do estado do RJ</li>
-        <li>Exibição de código IBGE de cada município</li>
-        <li>Sistema de paginação para facilitar a navegação</li>
-        <li>Interface responsiva e moderna</li>
-        <li>Integração com API REST</li>
+        <li>Seleção de estado (UF) para consulta.</li>
+        <li>Listagem dos municípios retornados pela API.</li>
+        <li>Exibição do nome do município e seu código IBGE.</li>
+        <li>Paginação implementada diretamente na API (.NET 10).</li>
+        <li>Controle de página e quantidade de itens por página no frontend.</li>
+        <li>Interface responsiva e simples, ideal para apresentação do desafio.</li>
       </ul>
     </section>
 
@@ -31,17 +33,22 @@
         <div class="bg-gray-50 p-4 rounded-lg">
           <h3 class="font-semibold text-gray-800 mb-2">Frontend</h3>
           <ul class="text-sm text-gray-600 space-y-1">
-            <li>• Angular 21</li>
+            <li>• Angular 21 (SPA)</li>
             <li>• TypeScript</li>
             <li>• Tailwind CSS</li>
-            <li>• RxJS</li>
+            <li>• Signals</li>
+            <li>• Standalone Components</li>
+            <li>• Deploy na Vercel</li>
           </ul>
         </div>
         <div class="bg-gray-50 p-4 rounded-lg">
           <h3 class="font-semibold text-gray-800 mb-2">Backend</h3>
           <ul class="text-sm text-gray-600 space-y-1">
-            <li>• API REST</li>
-            <li>• HTTP Client</li>
+            <li>• .NET 10 (ASP.NET Core Web API)</li>
+            <li>• Endpoint que lista municípios por UF</li>
+            <li>• Paginação com page e pageSize</li>
+            <li>• Retorno padronizado (<code>name</code> e <code>ibgeCode</code>)</li>
+            <li>• Hospedada via Docker no Back4app (b4a.run)</li>
           </ul>
         </div>
       </div>
@@ -50,14 +57,21 @@
     <section>
       <h2 class="text-2xl font-semibold text-gray-800 mb-4">Estrutura do Projeto</h2>
       <p class="text-gray-600 leading-relaxed mb-4">
-        O projeto segue as melhores práticas do Angular, utilizando:
+        A solução é composta por dois projetos independentes:
       </p>
       <ul class="list-disc list-inside space-y-2 text-gray-600">
-        <li><strong>Standalone Components:</strong> Componentes independentes e modulares</li>
-        <li><strong>Services:</strong> Lógica de negócio e comunicação com API</li>
-        <li><strong>Interfaces:</strong> Tipagem forte com TypeScript</li>
-        <li><strong>Signals:</strong> Gerenciamento reativo de estado</li>
-        <li><strong>Environment:</strong> Configuração centralizada da API</li>
+        <li><strong>MunicipiosAPI:</strong> API REST em .NET 10 que fornece os dados de municípios.</li>
+        <li><strong>MunicipiosAPP:</strong> SPA em Angular que consome a API e apresenta as informações ao usuário.</li>
+      </ul>
+      <p class="text-gray-600 leading-relaxed mt-4">
+        No frontend, foram utilizadas boas práticas modernas do Angular:
+      </p>
+      <ul class="list-disc list-inside space-y-2 text-gray-600 mt-2">
+        <li><strong>Standalone Components:</strong> estrutura modular e simplificada.</li>
+        <li><strong>Services:</strong> camada dedicada para requisições HTTP e integração com a API.</li>
+        <li><strong>Interfaces:</strong> tipagem forte para representar os modelos retornados pelo backend.</li>
+        <li><strong>Signals:</strong> gerenciamento reativo de estado nativo do Angular, sem a necessidade de RxJS.</li>
+        <li><strong>Environment:</strong>configuração da URL base da API diferenciada para desenvolvimento e produção.</li>
       </ul>
     </section>
 
