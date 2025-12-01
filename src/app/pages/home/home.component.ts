@@ -77,4 +77,11 @@ export class HomeComponent implements OnInit {
       this.loadMunicipios();
     }
   }
+
+  changePageSize(size: number): void {
+    this.pageSize.set(Number(size));
+    this.currentPage.set(1);
+    this.loadMunicipios();
+  }
+
 }

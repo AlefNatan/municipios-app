@@ -1,23 +1,97 @@
-<div>
-  <select (change)="onEstadoChange($any($event.target).value)">
-    <option *ngFor="let est of estados" [value]="est.uf">
-      {{ est.nome }}
-    </option>
-  </select>
+<div class="max-w-4xl mx-auto mt-10 px-4">
+  <!-- Título -->
+  <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Lista de Municípios</h2>
 
-  <div *ngIf="loading()">Carregando...</div>
+  <!-- Card -->
+  <div class="bg-white shadow-md rounded-xl p-8">
 
-  <ul *ngIf="!loading()">
-    <li *ngFor="let m of municipios()">
-      {{ m.name }} - {{ m.ibgeCode }}
-    </li>
-  </ul>
+    <!-- Linha: Select + Itens por página -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
-  <div class="pagination">
-    <button (click)="previousPage()" [disabled]="currentPage() === 1">Anterior</button>
+      <!-- Select Estado -->
+      <div class="w-full md:w-1/2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Selecione um Estado
+        </label>
+        <select
+          class="w-full border rounded-lg px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          (change)="onEstadoChange($any($event.target).value)"
+        >
+          <option *ngFor="let est of estados" [value]="est.uf" [selected]="est.uf === selectedEstado()">
+            {{ est.nome }}
+          </option>
+        </select>
+      </div>
 
-    <span>Página {{ currentPage() }} de {{ totalPages() }}</span>
+      <!-- Select: itens por página -->
+      <div class="w-full md:w-40">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Itens por página
+        </label>
+        <select
+          class="w-full border rounded-lg px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          (change)="changePageSize($any($event.target).value)"
+        >
+          <option [value]="10" [selected]="pageSize() === 10">10</option>
+          <option [value]="20" [selected]="pageSize() === 20">20</option>
+          <option [value]="50" [selected]="pageSize() === 50">50</option>
+        </select>
+      </div>
 
-    <button (click)="nextPage()" [disabled]="currentPage() === totalPages()">Próxima</button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading()" class="text-center py-6 text-blue-600 font-medium">
+      Carregando municípios...
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error()" class="text-center py-6 text-red-600 font-medium">
+      {{ error() }}
+    </div>
+
+    <!-- Cabeçalho da lista -->
+    <div *ngIf="!loading() && !error()" class="grid grid-cols-2 font-semibold text-gray-600 py-2 border-b mb-2">
+      <span>Município</span>
+      <span class="text-right">Código IBGE</span>
+    </div>
+
+    <!-- Lista -->
+    <ul *ngIf="!loading() && !error()" class="divide-y divide-gray-200">
+      <li
+        *ngFor="let m of municipios()"
+        class="py-3 text-gray-800 grid grid-cols-2"
+      >
+        <span>{{ m.name }}</span>
+        <span class="text-gray-500 text-right">{{ m.ibgeCode }}</span>
+      </li>
+    </ul>
+
+    <!-- Paginação -->
+    <div
+      *ngIf="!loading() && municipios().length > 0"
+      class="flex justify-center items-center space-x-4 mt-8"
+    >
+      <button
+        (click)="previousPage()"
+        [disabled]="currentPage() === 1"
+        class="px-4 py-2 rounded bg-gray-200 text-gray-700 disabled:opacity-40 hover:bg-gray-300"
+      >
+        Anterior
+      </button>
+
+      <span class="font-medium text-gray-700">
+        Página {{ currentPage() }} de {{ totalPages() }}
+      </span>
+
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages()"
+        class="px-4 py-2 rounded bg-gray-200 text-gray-700 disabled:opacity-40 hover:bg-gray-300"
+      >
+        Próxima
+      </button>
+    </div>
+
   </div>
 </div>
